@@ -5,7 +5,6 @@ export enum SupportedAppliesTo {
   GRANULAR = 'granular'
 }
 
-
 export enum SupportedEnvType {
   BASIC = 'basic',
   TOGGLE = 'toggle'
