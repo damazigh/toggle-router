@@ -20,6 +20,10 @@ export enum SupportedToggleType {
   RELEASE_TOGGLE = 'release_toggle'
 }
 
+export enum SupportedEntities {
+  PROJECT = 'PROJECT',
+  ACCOUNT = 'ACCOUNT'
+}
 export const TABLE_NAME = 'ENV';
 
 export const ENV_TYPE_INDEX = 'ENV_TYPE_INDEX';

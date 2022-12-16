@@ -1,6 +1,6 @@
 import { PutCommandInput, QueryCommandInput } from "@aws-sdk/lib-dynamodb";
 import { PreconditionFailedException, UnprocessableEntityException } from "@nestjs/common";
-import { SupportedAppliesTo, SupportedAppliesToForBasic, SupportedEnvType, TABLE_NAME, ENV_TYPE, ENV_TYPE_INDEX } from "src/enum/constant";
+import { SupportedAppliesToForBasic, SupportedEnvType, TABLE_NAME, ENV_TYPE, ENV_TYPE_INDEX } from "src/enum/constant";
 import { Utils } from "src/util/utils";
 import { uuid } from "uuidv4";
 import { AbstractDynamoCommand } from "../abstract.command";
