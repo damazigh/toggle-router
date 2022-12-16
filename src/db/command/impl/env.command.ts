@@ -1,7 +1,7 @@
 import { PutCommandInput } from "@aws-sdk/lib-dynamodb";
 import { UnprocessableEntityException } from "@nestjs/common";
 import { CreateEnv } from "src/db/env_variable/create_env";
-import { SupportedEnvType, TABLE_NAME } from "src/enum/constant";
+import { SupportedAppliesTo, SupportedAppliesToForBasic, SupportedEnvType, TABLE_NAME } from "src/enum/constant";
 import { Utils } from "src/util/utils";
 import { uuid } from "uuidv4";
 import { AbstractDynamoCommand } from "../abstract.command";
@@ -20,13 +20,17 @@ export class EnvCommand extends AbstractDynamoCommand implements CreateDynamoCom
         throw new UnprocessableEntityException('appliesTo should not be specified when the env is a toggle');
       if (!this.data.toggle)
         throw new UnprocessableEntityException('toggle parameter is required');
-      if (!this.data.value && this.data.appliesTo !== 'granular')
+      if (!this.data.value && this.data.appliesTo !== SupportedAppliesTo.GRANULAR)
         throw new UnprocessableEntityException('Value is required when toggle is not granular');
-      if (this.data.value && this.data.appliesTo === 'granular')
+      if (this.data.value && this.data.appliesTo === SupportedAppliesTo.GRANULAR)
         throw new UnprocessableEntityException('Granular toggle should not have a top value');
     } else if (this.data.type === SupportedEnvType.BASIC) {
       if (!this.data.value)
         throw new UnprocessableEntityException('basic env should have a value');
+      if (!this.data.appliesTo)
+        throw new UnprocessableEntityException(`You need to specify the scope of this env with the applieTo parameter (accepeted values: ${Object.values(SupportedAppliesToForBasic)})`); 
+      if (!Object.values(SupportedAppliesToForBasic).includes(this.data.appliesTo as SupportedAppliesToForBasic))
+        throw new UnprocessableEntityException('Unsupported appliesTo for basic env');
     } else {
       throw new UnprocessableEntityException(`Env should be of one of these types ${Object.values(SupportedEnvType)}`);
     }
@@ -46,10 +50,12 @@ export class EnvCommand extends AbstractDynamoCommand implements CreateDynamoCom
 
     if (this.data.type === SupportedEnvType.TOGGLE) {
       this.commands.push(metadataCommand);
-      this.commands.push(new ReleaseToggleCommand(this.data.toggle).buildCreateCommandInputs({ envName: this.data.name }));
+      const toggleCommand = new ReleaseToggleCommand(this.data.toggle).buildCreateCommandInputs({ envName: this.data.name })[0]; 
+      this.commands.push(toggleCommand);
       
     } else {
       metadataCommand.Item['secret'] = this.data.secret;
+      metadataCommand.Item['appliesTo'] = this.data.appliesTo;
       this.commands.push(metadataCommand);
     }
     return this.commands;
@@ -58,7 +64,7 @@ export class EnvCommand extends AbstractDynamoCommand implements CreateDynamoCom
   mapItemToChange() {
     const metadata = this.commands[0].Item;
     const toggle = this.commands[1]?.Item;
-    const { ['PK']: _x, ['SK']: _y, ...cleanedMetadata } = metadata
+    const { ['PK']: PK, ['SK']: _y, ...cleanedMetadata } = metadata
     let changes = {...cleanedMetadata};
     if (toggle) {
       const { ['PK']: _a, ['SK']: _b, ...cleanedToggle } = toggle;
@@ -67,12 +73,13 @@ export class EnvCommand extends AbstractDynamoCommand implements CreateDynamoCom
     const item = {
       TableName: TABLE_NAME,
       Item: {
-        PK: `ENV#${metadata.name}`,
+        PK: PK,
         SK: `History#${uuid()}`,
         changes: [
           changes
         ]
       }
     }
+    return item;
   }
 }

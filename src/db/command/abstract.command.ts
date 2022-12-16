@@ -11,29 +11,20 @@ export abstract class AbstractDynamoCommand implements Historisant {
     return null;
   }
 
-  async historizeCreate(item: any) {
+  async historize(item: any) {
     if (item) {
-      const cmd = {
-        TableName: TABLE_NAME,
-        Item: {
-          ...item,
-          event: 'CREATE'
-        }
-      }
-      await client.send(new PutCommand(cmd));
+      return client.send(new PutCommand(item));
     }
   }
 
   async create(commands: PutCommandInput[], historize = false) {
     commands.forEach(async command => {
       let putCommand = new PutCommand(command);
-      await client.send(putCommand);
+      await client.send(putCommand)
     });
 
-    this.historizeCreate(this.mapItemToChange());
-  }
-
-  async historizeUpdate(oldItem: any, newItem: any): Promise<any> {
-    throw new Error("Method not implemented.");
+    if (historize) {
+      await this.historize(this.mapItemToChange());
+    }
   }
 }

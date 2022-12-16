@@ -18,7 +18,6 @@ export class ReleaseToggleCommand extends AbstractDynamoCommand implements Creat
         PK: `ENV#${opts.envName}`,
         SK: `TOGGLE#${uuid()}`,
         toggleType: this.toggle.toggleType,
-        toggleData: this.toggle.data,
         appliesTo: this.toggle.appliesTo
       }
     };

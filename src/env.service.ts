@@ -1,4 +1,4 @@
-import { Injectable, UnprocessableEntityException } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { CreateEnv } from './db/env_variable/create_env';
 
 import { EnvCommand } from './db/command/impl/env.command';
@@ -6,10 +6,10 @@ import { EnvCommand } from './db/command/impl/env.command';
 @Injectable()
 export class EnvService {
   
-  public async create(createEnv: CreateEnv) {
+  public async create(createEnv: CreateEnv): Promise<any>{
     const command = new EnvCommand(createEnv)
     command.validateForCreation();
     const createCommands = command.buildCreateCommandInputs();
-    return command.create(createCommands, true);
+    return await command.create(createCommands, true);
   }
 }
