@@ -14,3 +14,5 @@ export enum SupportedEnvType {
 export enum SupportedToggleType {
   RELEASE_TOGGLE = 'release_toggle'
 }
+
+export const TABLE_NAME = 'ENV';
