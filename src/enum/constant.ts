@@ -25,6 +25,4 @@ export enum SupportedEntities {
   ACCOUNT = 'ACCOUNT'
 }
 export const TABLE_NAME = 'ENV';
-
 export const ENV_TYPE_INDEX = 'ENV_TYPE_INDEX';
-export const ENV_TYPE = 'envType';

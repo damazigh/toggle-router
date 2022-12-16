@@ -1,8 +1,8 @@
 import { Injectable } from '@nestjs/common';
+import { response } from 'express';
 import { EnvCommand } from './db/command/impl/env.command';
 import { CreateEnv } from './db/model/create_env';
 import { EnvVariableItem } from './db/model/env_variable_item';
-import { GetEnv } from './db/model/get_env';
 
 @Injectable()
 export class EnvService {
@@ -18,11 +18,11 @@ export class EnvService {
   
   }
 
-  public async all(getEnv: GetEnv) {
-    const command = new EnvCommand(getEnv);
-    command.validateForRead();
-    const readCommand = command.buildReadCommandInput();
-    let response = await command.read(readCommand);
-    return response.Items.map((item) => new EnvVariableItem(item));
+  public async all() {
+    const command = new EnvCommand(null);
+    const readCommands = command.buildReadCommandInputs();
+    let items = (await command.read(readCommands)).flat();
+    return items.map((item) => new EnvVariableItem(item));
   }
+
 }
