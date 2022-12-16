@@ -1,4 +1,4 @@
-import { PutCommand, PutCommandInput } from "@aws-sdk/lib-dynamodb";
+import { PutCommand, PutCommandInput, QueryCommand, QueryCommandInput } from "@aws-sdk/lib-dynamodb";
 import { TABLE_NAME } from "src/enum/constant";
 import { Historisant } from "./historisant";
 import client from '../client';
@@ -27,4 +27,9 @@ export abstract class AbstractDynamoCommand implements Historisant {
       await this.historize(this.mapItemToChange('CREATE'));
     }
   }
+
+  async read(command: QueryCommandInput) {
+    return await client.send(new QueryCommand(command));
+  }
+
 }

@@ -1,7 +1,8 @@
-import { Body, Controller, Get, Post } from '@nestjs/common';
-import { CreateEnv } from './db/model/create_env';
-import client from './db/client';
+import { Body, Controller, Get, Post, Query } from '@nestjs/common';
+import { CreateEnv } from './db/env_variable/create_env';
+import { GetEnv } from './db/env_variable/get_env';
 import { EnvService } from './env.service';
+
 
 @Controller('env')
 export class EnvController {
@@ -15,7 +16,8 @@ export class EnvController {
   }
 
   @Get()
-  public greet() {
-    return 'Hello world!'
+  public async all(@Query('type') type: string) {
+    const res = await this.envService.all(new GetEnv(type));
+    return res;
   }
 }
