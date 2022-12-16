@@ -1,5 +1,5 @@
 import { PutCommandInput } from "@aws-sdk/lib-dynamodb";
-import { ReleaseToggle } from "src/db/model/toggle/release_toggle";
+import { ReleaseToggle } from "src/db/env_variable/toggle/release_toggle";
 import { TABLE_NAME } from "src/enum/constant";
 import { uuid } from "uuidv4";
 import { AbstractDynamoCommand } from "../abstract.command";
@@ -12,7 +12,7 @@ export class ReleaseToggleCommand extends AbstractDynamoCommand implements Creat
   }
 
   buildCreateCommandInputs(opts: { envName: string }): PutCommandInput | PutCommandInput[] {
-    return {
+    const cmd = {
       TableName: TABLE_NAME,
       Item: {
         PK: `ENV#${opts.envName}`,
@@ -22,5 +22,7 @@ export class ReleaseToggleCommand extends AbstractDynamoCommand implements Creat
         appliesTo: this.toggle.appliesTo
       }
     };
+    this.commands.push(cmd);
+    return this.commands;
   }
 }

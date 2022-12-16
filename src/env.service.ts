@@ -1,5 +1,5 @@
 import { Injectable, UnprocessableEntityException } from '@nestjs/common';
-import { CreateEnv } from './db/model/create_env';
+import { CreateEnv } from './db/env_variable/create_env';
 
 import { EnvCommand } from './db/command/impl/env.command';
 
