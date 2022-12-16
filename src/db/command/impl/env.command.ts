@@ -28,7 +28,7 @@ export class EnvCommand extends AbstractDynamoCommand implements CreateDynamoCom
       if (!this.data.value)
         throw new UnprocessableEntityException('basic env should have a value');
       if (!this.data.appliesTo)
-        throw new UnprocessableEntityException(`You need to specify the scope of this env with the applieTo parameter (accepted values: ${Object.values(SupportedAppliesToForBasic)})`); 
+        throw new UnprocessableEntityException(`You need to specify the scope of this env with the appliesTo parameter (accepted values: ${Object.values(SupportedAppliesToForBasic)})`);
       if (!Object.values(SupportedAppliesToForBasic).includes(this.data.appliesTo as SupportedAppliesToForBasic))
         throw new UnprocessableEntityException('Unsupported appliesTo for basic env');
     } else {
