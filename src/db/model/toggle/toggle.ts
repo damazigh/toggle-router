@@ -6,7 +6,6 @@ export abstract class Toggle {
     this.id = uuid();
   }
   toggleType: 'release_toggle' | 'experiment_toggle' | 'ops_toggle';
-  appliesTo: SupportedRegions;
   id: string;
 }
 

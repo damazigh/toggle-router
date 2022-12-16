@@ -20,12 +20,8 @@ export class EnvCommand extends AbstractDynamoCommand implements CreateDynamoCom
         throw new UnprocessableEntityException('appliesTo should not be specified when the env is a toggle');
       if (!this.data.toggle)
         throw new UnprocessableEntityException('toggle parameter is required');
-      if (!this.data.value && this.data.appliesTo !== SupportedAppliesTo.GRANULAR)
-        throw new UnprocessableEntityException('Value is required when toggle is not granular');
-      if (this.data.value && this.data.appliesTo === SupportedAppliesTo.GRANULAR)
-        throw new UnprocessableEntityException('Granular toggle should not have a top value');
-      if (!Object.values(SupportedAppliesTo).includes(this.data.toggle?.appliesTo as SupportedAppliesTo))
-        throw new UnprocessableEntityException(`Unsupported appliesTo value: '${this.data.toggle.appliesTo}' - supported values: ${Object.values(SupportedAppliesTo)}`);  
+      if (this.data.value)
+        throw new UnprocessableEntityException('Toggles should not have a top value');
     } else if (this.data.type === SupportedEnvType.BASIC) {
       if (!this.data.value)
         throw new UnprocessableEntityException('basic env should have a value');
@@ -46,7 +42,8 @@ export class EnvCommand extends AbstractDynamoCommand implements CreateDynamoCom
         PK: `ENV#${this.data.name}`,
         SK: `ENV#${this.data.name}`,
         description: this.data.description,
-        createdAtTimestamp: Utils.unixTimestampNow()
+        createdAtTimestamp: Utils.unixTimestampNow(),
+        type: this.data.type
       }
     }
 

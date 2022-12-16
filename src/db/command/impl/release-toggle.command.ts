@@ -1,6 +1,6 @@
 import { PutCommandInput } from "@aws-sdk/lib-dynamodb";
 import { ReleaseToggle } from "src/db/model/toggle/release_toggle";
-import { TABLE_NAME } from "src/enum/constant";
+import { SupportedAppliesTo, TABLE_NAME } from "src/enum/constant";
 import { uuid } from "uuidv4";
 import { AbstractDynamoCommand } from "../abstract.command";
 import { CreateDynamoCommand } from "../create.dynamo.command";
@@ -18,7 +18,7 @@ export class ReleaseToggleCommand extends AbstractDynamoCommand implements Creat
         PK: `ENV#${opts.envName}`,
         SK: `TOGGLE#${uuid()}`,
         toggleType: this.toggle.toggleType,
-        appliesTo: this.toggle.appliesTo
+        appliesTo: SupportedAppliesTo.GRANULAR
       }
     };
     this.commands.push(cmd);

@@ -2,6 +2,8 @@ import { Injectable } from '@nestjs/common';
 import { CreateEnv } from './db/model/create_env';
 
 import { EnvCommand } from './db/command/impl/env.command';
+import client from './db/client';
+import { GetItemCommand, GetItemInputFilterSensitiveLog } from '@aws-sdk/client-dynamodb';
 
 @Injectable()
 export class EnvService {
@@ -11,5 +13,8 @@ export class EnvService {
     command.validateForCreation();
     const createCommands = command.buildCreateCommandInputs();
     return await command.create(createCommands, true);
+  }
+
+  public async getItem(pk: string): Promise<any> {
   }
 }
