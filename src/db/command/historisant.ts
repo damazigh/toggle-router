@@ -1,4 +1,4 @@
 export interface Historisant {
   historize(item): Promise<any>;
-  mapItemToChange();
+  mapItemToChange(event: string);
 }

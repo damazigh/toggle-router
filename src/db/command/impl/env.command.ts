@@ -63,7 +63,7 @@ export class EnvCommand extends AbstractDynamoCommand implements CreateDynamoCom
     return this.commands;
   }
 
-  mapItemToChange() {
+  mapItemToChange(event: string) {
     const metadata = this.commands[0].Item;
     const toggle = this.commands[1]?.Item;
     const { ['PK']: PK, ['SK']: _y, ...cleanedMetadata } = metadata
@@ -75,6 +75,7 @@ export class EnvCommand extends AbstractDynamoCommand implements CreateDynamoCom
     const item = {
       TableName: TABLE_NAME,
       Item: {
+        event: event,
         PK: PK,
         SK: `HISTORY#${uuid()}`,
         changes: [

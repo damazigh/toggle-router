@@ -7,7 +7,7 @@ export abstract class AbstractDynamoCommand implements Historisant {
   
   protected commands: any [] = [];
   
-  public mapItemToChange(): any {
+  public mapItemToChange(event: string): any {
     return null;
   }
 
@@ -24,7 +24,7 @@ export abstract class AbstractDynamoCommand implements Historisant {
     });
 
     if (historize) {
-      await this.historize(this.mapItemToChange());
+      await this.historize(this.mapItemToChange('CREATE'));
     }
   }
 }
