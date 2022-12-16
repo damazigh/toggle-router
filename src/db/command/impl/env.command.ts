@@ -17,8 +17,11 @@ export class EnvCommand extends AbstractDynamoCommand implements CreateDynamoCom
 
   constructor(private data: CreateEnv | GetEnv) {
     super();
-    this.createEnvData = data as CreateEnv
-    this.getEnvData = data as GetEnv
+    if (data instanceof CreateEnv) {
+      this.createEnvData = data as CreateEnv
+    } else if (data instanceof GetEnv) {
+      this.getEnvData = data as GetEnv
+    }
   }
 
   public validateForCreation() {
