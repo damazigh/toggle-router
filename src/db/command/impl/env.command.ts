@@ -27,21 +27,10 @@ export class EnvCommand extends AbstractDynamoCommand implements CreateDynamoCom
         throw new UnprocessableEntityException('appliesTo should not be specified when the env is a toggle');
       if (!this.createEnvData.toggle)
         throw new UnprocessableEntityException('toggle parameter is required');
-<<<<<<< HEAD
-      if (this.data.value)
+      if (this.createEnvData.value)
         throw new UnprocessableEntityException('Toggles should not have a top value');
     } else if (this.data.type === SupportedEnvType.BASIC) {
-      if (!this.data.value)
-=======
-      if (!this.createEnvData.value && this.createEnvData.appliesTo !== SupportedAppliesTo.GRANULAR)
-        throw new UnprocessableEntityException('Value is required when toggle is not granular');
-      if (this.createEnvData.value && this.createEnvData.appliesTo === SupportedAppliesTo.GRANULAR)
-        throw new UnprocessableEntityException('Granular toggle should not have a top value');
-      if (!Object.values(SupportedAppliesTo).includes(this.createEnvData.toggle?.appliesTo as SupportedAppliesTo))
-        throw new UnprocessableEntityException(`Unsupported appliesTo value: '${this.createEnvData.toggle.appliesTo}' - supported values: ${Object.values(SupportedAppliesTo)}`);  
-    } else if (this.createEnvData.type === SupportedEnvType.BASIC) {
       if (!this.createEnvData.value)
->>>>>>> 02811bdae27f52274c868b13e4031ff4bc5500e6
         throw new UnprocessableEntityException('basic env should have a value');
       if (!this.createEnvData.appliesTo)
         throw new UnprocessableEntityException(`You need to specify the scope of this env with the applieTo parameter (accepted values: ${Object.values(SupportedAppliesToForBasic)})`); 
@@ -57,18 +46,10 @@ export class EnvCommand extends AbstractDynamoCommand implements CreateDynamoCom
     const metadataCommand = {
       TableName: TABLE_NAME,
       Item: {
-<<<<<<< HEAD
-        PK: `ENV#${this.data.name}`,
-        SK: `ENV#${this.data.name}`,
-        description: this.data.description,
-        createdAtTimestamp: Utils.unixTimestampNow(),
-        type: this.data.type
-=======
         PK: `ENV#${this.createEnvData.name}`,
         SK: `ENV#${this.createEnvData.name}`,
         description: this.createEnvData.description,
         createdAtTimestamp: Utils.unixTimestampNow()
->>>>>>> 02811bdae27f52274c868b13e4031ff4bc5500e6
       }
     }
 
