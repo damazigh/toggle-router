@@ -1,5 +1,5 @@
 import { PutCommandInput } from "@aws-sdk/lib-dynamodb";
-import { ReleaseToggle } from "src/db/env_variable/toggle/release_toggle";
+import { ReleaseToggle } from "src/db/model/toggle/release_toggle";
 import { TABLE_NAME } from "src/enum/constant";
 import { uuid } from "uuidv4";
 import { AbstractDynamoCommand } from "../abstract.command";

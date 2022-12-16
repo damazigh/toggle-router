@@ -1,6 +1,6 @@
 import { PutCommandInput } from "@aws-sdk/lib-dynamodb";
 import { UnprocessableEntityException } from "@nestjs/common";
-import { CreateEnv } from "src/db/env_variable/create_env";
+import { CreateEnv } from "src/db/model/create_env";
 import { SupportedAppliesTo, SupportedAppliesToForBasic, SupportedEnvType, TABLE_NAME } from "src/enum/constant";
 import { Utils } from "src/util/utils";
 import { uuid } from "uuidv4";
