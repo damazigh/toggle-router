@@ -43,6 +43,7 @@ export class EnvCommand extends AbstractDynamoCommand implements CreateDynamoCom
       Item: {
         PK: `ENV#${this.data.name}`,
         SK: `ENV#${this.data.name}`,
+        name: this.data.name,
         description: this.data.description,
         createdAtTimestamp: Utils.unixTimestampNow(),
         envType: this.data.type
@@ -54,6 +55,7 @@ export class EnvCommand extends AbstractDynamoCommand implements CreateDynamoCom
       const toggleCommand = new ReleaseToggleCommand(this.data.toggle).buildCreateCommandInputs({ envName: this.data.name })[0]; 
       this.commands.push(toggleCommand);
     } else {
+      metadataCommand.Item['value'] = this.data.value;
       metadataCommand.Item['secret'] = this.data.secret;
       metadataCommand.Item['appliesTo'] = this.data.appliesTo;
       this.commands.push(metadataCommand);

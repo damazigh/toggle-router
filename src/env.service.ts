@@ -3,7 +3,6 @@ import { response } from 'express';
 import { EnvCommand } from './db/command/impl/env.command';
 import { CreateEnv } from './db/model/create_env';
 import { EnvVariableItem } from './db/model/env_variable_item';
-import { SupportedEnvType } from './enum/constant';
 
 @Injectable()
 export class EnvService {
