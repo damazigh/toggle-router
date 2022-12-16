@@ -14,6 +14,7 @@ export class EnvEntityCommand extends AbstractDynamoCommand implements BatchWrit
 
   public validateForCreation() {
     const arr = this.object as CreateEnvEntity[];
+    Validator.maxLength(arr, 15);
     arr.forEach(data => {
       Validator.require(data, 'entityType');
       Validator.require(data, 'entityId');
