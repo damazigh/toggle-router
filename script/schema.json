@@ -1,0 +1,132 @@
+{
+  "AttributeDefinitions": [
+    {
+      "AttributeName": "PK",
+      "AttributeType": "S"
+    },
+    {
+      "AttributeName": "SK",
+      "AttributeType": "S"
+    },
+    {
+      "AttributeName": "envType",
+      "AttributeType": "S"
+    },
+    {
+      "AttributeName": "toggleType",
+      "AttributeType": "S"
+    },
+    {
+      "AttributeName": "id",
+      "AttributeType": "N"
+    },
+    {
+      "AttributeName": "appliesTo",
+      "AttributeType": "S"
+    }
+  ],
+  "TableName": "ENV",
+  "KeySchema": [
+    {
+      "AttributeName": "PK",
+      "KeyType": "HASH"
+    },
+    {
+      "AttributeName": "SK",
+      "KeyType": "RANGE"
+    }
+  ],
+  "GlobalSecondaryIndexes": [
+    {
+      "IndexName": "INVERTED_INDEX",
+      "KeySchema": [
+        {
+          "AttributeName": "SK",
+          "KeyType": "HASH"
+        },
+        {
+          "AttributeName": "PK",
+          "KeyType": "RANGE"
+        }
+      ],
+      "Projection": {
+        "ProjectionType": "ALL"
+      },
+      "ProvisionedThroughput": {
+        "ReadCapacityUnits": 1,
+        "WriteCapacityUnits": 1
+      }
+    },
+    {
+      "IndexName": "ENV_TYPE_INDEX",
+      "KeySchema": [
+        {
+          "AttributeName": "envType",
+          "KeyType": "HASH"
+        }
+      ],
+      "Projection": {
+        "ProjectionType": "ALL"
+      },
+      "ProvisionedThroughput": {
+        "ReadCapacityUnits": 1,
+        "WriteCapacityUnits": 1
+      }
+    },
+    {
+      "IndexName": "TOGGLE_TYPE_INDEX",
+      "KeySchema": [
+        {
+          "AttributeName": "toggleType",
+          "KeyType": "HASH"
+        },
+        {
+          "AttributeName": "id",
+          "KeyType": "RANGE"
+        }
+      ],
+      "Projection": {
+        "ProjectionType": "ALL"
+      },
+      "ProvisionedThroughput": {
+        "ReadCapacityUnits": 1,
+        "WriteCapacityUnits": 1
+      }
+    },
+    {
+      "IndexName": "APPLIES_TO_INDEX",
+      "KeySchema": [
+        {
+          "AttributeName": "appliesTo",
+          "KeyType": "HASH"
+        },
+        {
+          "AttributeName": "SK",
+          "KeyType": "RANGE"
+        }
+      ],
+      "Projection": {
+        "ProjectionType": "ALL"
+      },
+      "ProvisionedThroughput": {
+        "ReadCapacityUnits": 1,
+        "WriteCapacityUnits": 1
+      }
+    }
+  ],
+  "BillingMode": "PROVISIONED",
+  "ProvisionedThroughput": {
+      "ReadCapacityUnits": 100,
+      "WriteCapacityUnits": 100
+  },
+  "StreamSpecification": {
+      "StreamEnabled": true,
+      "StreamViewType": "NEW_IMAGE"
+  },
+  "SSESpecification": {
+      "Enabled": true,
+      "SSEType": "AES256",
+      "KMSMasterKeyId": ""
+  },
+  "TableClass": "STANDARD"
+}

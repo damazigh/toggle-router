@@ -4,4 +4,4 @@ export abstract class Toggle {
   id: string;
 }
 
-export type SupportedRegions = 'all' | 'us-east-1' | 'us-west-1' | 'eu-west-3';
+export type SupportedRegions = 'all' | 'us-east-1' | 'eu-west-3' | 'granular';

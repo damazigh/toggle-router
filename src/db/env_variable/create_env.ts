@@ -7,6 +7,7 @@ export class CreateEnv {
   secret: boolean;
   type: string;
   createdAt: Date;
-  toggle?: ReleaseToggle
-  appliesTo?: SupportedRegions
+  toggle?: ReleaseToggle;
+  appliesTo?: SupportedRegions;
+  value?: string;
 }
