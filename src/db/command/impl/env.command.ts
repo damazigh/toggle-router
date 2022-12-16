@@ -24,6 +24,8 @@ export class EnvCommand extends AbstractDynamoCommand implements CreateDynamoCom
         throw new UnprocessableEntityException('Value is required when toggle is not granular');
       if (this.data.value && this.data.appliesTo === SupportedAppliesTo.GRANULAR)
         throw new UnprocessableEntityException('Granular toggle should not have a top value');
+      if (!Object.values(SupportedAppliesTo).includes(this.data.toggle?.appliesTo as SupportedAppliesTo))
+        throw new UnprocessableEntityException(`Unsupported appliesTo value: '${this.data.toggle.appliesTo}' - supported values: ${Object.values(SupportedAppliesTo)}`);  
     } else if (this.data.type === SupportedEnvType.BASIC) {
       if (!this.data.value)
         throw new UnprocessableEntityException('basic env should have a value');
@@ -74,7 +76,7 @@ export class EnvCommand extends AbstractDynamoCommand implements CreateDynamoCom
       TableName: TABLE_NAME,
       Item: {
         PK: PK,
-        SK: `History#${uuid()}`,
+        SK: `HISTORY#${uuid()}`,
         changes: [
           changes
         ]
