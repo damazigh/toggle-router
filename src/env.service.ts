@@ -1,8 +1,8 @@
 import { Injectable } from '@nestjs/common';
 import { EnvCommand } from './db/command/impl/env.command';
-import { CreateEnv } from './db/env_variable/create_env';
-import { GetEnv } from './db/env_variable/get_env';
-import { EnvVariableItem } from './db/env_variable/env_variable_item';
+import { CreateEnv } from './db/model/create_env';
+import { EnvVariableItem } from './db/model/env_variable_item';
+import { GetEnv } from './db/model/get_env';
 
 @Injectable()
 export class EnvService {
