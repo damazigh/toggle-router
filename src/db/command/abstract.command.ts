@@ -28,8 +28,14 @@ export abstract class AbstractDynamoCommand implements Historisant {
     }
   }
 
-  async read(command: QueryCommandInput) {
-    return await client.send(new QueryCommand(command));
+  async read(commands: QueryCommandInput[]) {
+    var items = [];
+    for await (const command of commands) {
+      let queryCommand = new QueryCommand(command);
+      let res = await client.send(queryCommand);
+      items.push(res.Items);
+    }
+    return items;
   }
 
 }
