@@ -17,11 +17,8 @@ export class EnvCommand extends AbstractDynamoCommand implements CreateDynamoCom
 
   constructor(private data: CreateEnv | GetEnv) {
     super();
-    if (data instanceof CreateEnv) {
-      this.createEnvData = data as CreateEnv
-    } else if (data instanceof GetEnv) {
-      this.getEnvData = data as GetEnv
-    }
+    this.createEnvData = data as CreateEnv
+    this.getEnvData = data as GetEnv
   }
 
   public validateForCreation() {
@@ -40,7 +37,7 @@ export class EnvCommand extends AbstractDynamoCommand implements CreateDynamoCom
       if (!this.createEnvData.value)
         throw new UnprocessableEntityException('basic env should have a value');
       if (!this.createEnvData.appliesTo)
-        throw new UnprocessableEntityException(`You need to specify the scope of this env with the applieTo parameter (accepeted values: ${Object.values(SupportedAppliesToForBasic)})`); 
+        throw new UnprocessableEntityException(`You need to specify the scope of this env with the applieTo parameter (accepted values: ${Object.values(SupportedAppliesToForBasic)})`); 
       if (!Object.values(SupportedAppliesToForBasic).includes(this.createEnvData.appliesTo as SupportedAppliesToForBasic))
         throw new UnprocessableEntityException('Unsupported appliesTo for basic env');
     } else {
