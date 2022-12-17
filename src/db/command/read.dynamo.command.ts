@@ -1,5 +1,6 @@
-import { QueryCommandInput } from "@aws-sdk/lib-dynamodb";
+import { GetCommandInput, QueryCommandInput } from "@aws-sdk/lib-dynamodb";
 
 export interface ReadDynamoCommand {
-    buildReadCommandInputs(opts?): QueryCommandInput | QueryCommandInput[];
+    buildGetCommandInput(opts?): GetCommandInput | GetCommandInput[];
+    buildQueryCommandInputs(opts?): QueryCommandInput | QueryCommandInput[];
 }

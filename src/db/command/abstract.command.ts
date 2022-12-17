@@ -1,4 +1,4 @@
-import { BatchWriteCommand, BatchWriteCommandInput, PutCommand, PutCommandInput, QueryCommand, QueryCommandInput } from "@aws-sdk/lib-dynamodb";
+import { BatchWriteCommand, BatchWriteCommandInput, GetCommand, GetCommandInput, PutCommand, PutCommandInput, QueryCommand, QueryCommandInput } from "@aws-sdk/lib-dynamodb";
 import { Historisant } from "./historisant";
 import client from '../client';
 
@@ -31,7 +31,7 @@ export abstract class AbstractDynamoCommand implements Historisant {
     await client.send(new BatchWriteCommand(command));
   }
 
-  async read(commands: QueryCommandInput[]) {
+  async query(commands: QueryCommandInput[]) {
     var items = [];
     for await (const command of commands) {
       let queryCommand = new QueryCommand(command);
@@ -39,6 +39,11 @@ export abstract class AbstractDynamoCommand implements Historisant {
       items.push(res.Items);
     }
     return items;
+  }
+
+  async read(command: GetCommandInput) {
+    let res = await client.send(new GetCommand(command));
+    return res.Item
   }
 
 }
