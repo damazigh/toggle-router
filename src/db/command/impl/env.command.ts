@@ -15,6 +15,7 @@ export class EnvCommand extends AbstractDynamoCommand implements CreateDynamoCom
 
   private createEnvData: CreateEnv;
   private getEnvData: GetEnv;
+  toggleSortKey?: string;
 
 
   constructor(data: CreateEnv | GetEnv) {
@@ -48,8 +49,8 @@ export class EnvCommand extends AbstractDynamoCommand implements CreateDynamoCom
     const metadataCommand = {
       TableName: TABLE_NAME,
       Item: {
-        PK: `ENV#${this.createEnvData.name}`,
-        SK: `ENV#${this.createEnvData.name}`,
+        PK: this.primaryKeyForCreate(),
+        SK: this.primaryKeyForCreate(),
         name: this.createEnvData.name,
         description: this.createEnvData.description,
         createdAtTimestamp: Utils.unixTimestampNow(),
@@ -59,7 +60,9 @@ export class EnvCommand extends AbstractDynamoCommand implements CreateDynamoCom
 
     if (this.createEnvData.type === SupportedEnvType.TOGGLE) {
       this.commands.push(metadataCommand);
-      const toggleCommand = new ReleaseToggleCommand(this.createEnvData.toggle).buildCreateCommandInputs({ envName: this.createEnvData.name })[0];
+      const releaseToggleCommand = new ReleaseToggleCommand(this.createEnvData.toggle);
+      this.toggleSortKey = releaseToggleCommand.sortKey;
+      const toggleCommand = releaseToggleCommand.buildCreateCommandInputs({ envName: this.createEnvData.name })[0];
       this.commands.push(toggleCommand);
     } else {
       metadataCommand.Item['value'] = this.createEnvData.value;
@@ -68,6 +71,10 @@ export class EnvCommand extends AbstractDynamoCommand implements CreateDynamoCom
       this.commands.push(metadataCommand);
     }
     return this.commands;
+  }
+
+  primaryKeyForCreate() {
+    return `ENV#${this.createEnvData.name}`;
   }
 
   mapItemToChange(event: string) {

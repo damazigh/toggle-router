@@ -2,17 +2,19 @@ import { Injectable } from '@nestjs/common';
 import { EnvCommand } from './db/command/impl/env.command';
 import { CreateEnv } from './inout/in/create_env';
 import { GetEnv } from './inout/in/get_env';
+import { CreateEnvOutput } from './inout/out/create_env_output';
 import { EnvOutput } from './inout/out/env_output';
 import { ToggleOutput } from './inout/out/toggle_output';
 
 @Injectable()
 export class EnvService {
   
-  public async create(createEnv: CreateEnv): Promise<any> {
+  public async create(createEnv: CreateEnv) {
     const command = new EnvCommand(createEnv)
     command.validateForCreation();
     const createCommands = command.buildCreateCommandInputs();
-    return await command.create(createCommands, true);
+    await command.create(createCommands, true);
+    return new CreateEnvOutput(command.primaryKeyForCreate(), command.toggleSortKey);
   }
 
   public async all() {
@@ -21,8 +23,6 @@ export class EnvService {
     let items = (await command.query(queryCommands)).flat();
 
     const [envs, toggles] = this.envAndToggles(items);
-
-    // map for output, and sort by creation date
     return envs.map((env) => new EnvOutput(env, toggles[env.PK])).sort((a, b) => b.createdAt - a.createdAt);
   }
 
@@ -31,6 +31,7 @@ export class EnvService {
     command.validateForQueryOne();
     const queryCommand = command.buildQueryCommandInputs();
     let items = (await command.query(queryCommand)).flat();
+
     const [envs, toggles] = this.envAndToggles(items);
     const env = envs.length > 0 ? envs[0] : null;
     return env != null ? new EnvOutput(env, toggles[env.PK]) : {};

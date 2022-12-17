@@ -6,9 +6,11 @@ import { AbstractDynamoCommand } from "../abstract.command";
 import { CreateDynamoCommand } from "../create.dynamo.command";
 
 export class ReleaseToggleCommand extends AbstractDynamoCommand implements CreateDynamoCommand {
-  
+  sortKey: string
+
   constructor(private toggle: ReleaseToggle) {
     super();
+    this.sortKey = `TOGGLE#${uuid()}`;
   }
 
   buildCreateCommandInputs(opts: { envName: string }): PutCommandInput | PutCommandInput[] {
@@ -16,7 +18,7 @@ export class ReleaseToggleCommand extends AbstractDynamoCommand implements Creat
       TableName: TABLE_NAME,
       Item: {
         PK: `ENV#${opts.envName}`,
-        SK: `TOGGLE#${uuid()}`,
+        SK: this.sortKey,
         toggleType: this.toggle.toggleType,
         appliesTo: SupportedAppliesTo.GRANULAR
       }
@@ -24,4 +26,5 @@ export class ReleaseToggleCommand extends AbstractDynamoCommand implements Creat
     this.commands.push(cmd);
     return this.commands;
   }
+
 }

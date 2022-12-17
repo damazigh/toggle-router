@@ -16,11 +16,10 @@ export class EnvController {
   }
 
   @Get()
-  public all() {
-    const res = this.envService.all();
+  public async all() {
+    const res = await this.envService.all();
     return res;
   }
-
 
   @Get(':key')
   public async env(@Param() getEnv: GetEnv) {
