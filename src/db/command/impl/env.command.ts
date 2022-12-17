@@ -1,6 +1,6 @@
 import { GetCommandInput, PutCommandInput, QueryCommandInput } from "@aws-sdk/lib-dynamodb";
 import { PreconditionFailedException, UnprocessableEntityException } from "@nestjs/common";
-import { SupportedAppliesToForBasic, SupportedEnvType, TABLE_NAME, SupportedToggleType, GlobalSecondaryIndexes } from "src/enum/constant";
+import { SupportedAppliesToForBasic, SupportedEnvType, TABLE_NAME, SupportedToggleType, GlobalSecondaryIndexes, SupportedAppliesTo } from "src/enum/constant";
 import { Utils } from "src/util/utils";
 import { uuid } from "uuidv4";
 import { AbstractDynamoCommand } from "../abstract.command";
@@ -49,8 +49,8 @@ export class EnvCommand extends AbstractDynamoCommand implements CreateDynamoCom
     const metadataCommand = {
       TableName: TABLE_NAME,
       Item: {
-        PK: this.primaryKeyForCreate(),
-        SK: this.primaryKeyForCreate(),
+        PK: `ENV#${this.createEnvData.name}`,
+        SK: `ENV#${this.createEnvData.name}#${this.createEnvData.appliesTo || SupportedAppliesTo.GRANULAR}`,
         name: this.createEnvData.name,
         description: this.createEnvData.description,
         createdAtTimestamp: Utils.unixTimestampNow(),
@@ -73,10 +73,6 @@ export class EnvCommand extends AbstractDynamoCommand implements CreateDynamoCom
     return this.commands;
   }
 
-  primaryKeyForCreate() {
-    return `ENV#${this.createEnvData.name}`;
-  }
-
   mapItemToChange(event: string) {
     const metadata = this.commands[0].Item;
     const toggle = this.commands[1]?.Item;
@@ -91,7 +87,7 @@ export class EnvCommand extends AbstractDynamoCommand implements CreateDynamoCom
       Item: {
         event: event,
         PK: PK,
-        SK: `HISTORY#${uuid()}`,
+        SK: `HISTORY#${uuid()}#${metadata.appliesTo || SupportedAppliesTo.GRANULAR}`,
         changes: [
           changes
         ]

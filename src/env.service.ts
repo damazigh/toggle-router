@@ -14,7 +14,7 @@ export class EnvService {
     command.validateForCreation();
     const createCommands = command.buildCreateCommandInputs();
     await command.create(createCommands, true);
-    return new CreateEnvOutput(command.primaryKeyForCreate(), command.toggleSortKey);
+    return new CreateEnvOutput(`ENV#${createEnv.name}`, command.toggleSortKey);
   }
 
   public async all() {

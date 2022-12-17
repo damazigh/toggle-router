@@ -10,7 +10,7 @@ export class ReleaseToggleCommand extends AbstractDynamoCommand implements Creat
 
   constructor(private toggle: ReleaseToggle) {
     super();
-    this.sortKey = `TOGGLE#${uuid()}`;
+    this.sortKey = `TOGGLE#${uuid()}#${SupportedAppliesTo.GRANULAR}`;
   }
 
   buildCreateCommandInputs(opts: { envName: string }): PutCommandInput | PutCommandInput[] {

@@ -1,23 +1,23 @@
 export enum SupportedAppliesToForBasic {
-  ALL = 'all',
-  US_EAST_1 = 'us-east-1',
-  EU_WEST_3 = 'eu-west-3',
+  ALL = 'ALL',
+  US_EAST_1 = 'US-EAST-1',
+  EU_WEST_3 = 'EU-WEST-3',
 }
 
 export enum SupportedAppliesTo {
-  ALL = 'all',
-  US_EAST_1 = 'us-east-1',
-  EU_WEST_3 = 'eu-west-3',
-  GRANULAR = 'granular'
+  ALL = 'ALL',
+  US_EAST_1 = 'US-EAST-1',
+  EU_WEST_3 = 'EU-WEST-3',
+  GRANULAR = 'GRANULAR'
 }
 
 export enum SupportedEnvType {
-  BASIC = 'basic',
-  TOGGLE = 'toggle'
+  BASIC = 'BASIC',
+  TOGGLE = 'TOGGLE'
 }
 
 export enum SupportedToggleType {
-  RELEASE_TOGGLE = 'release_toggle'
+  RELEASE_TOGGLE = 'RELEASE_TOGGLE'
 }
 
 export enum SupportedEntities {
