@@ -21,7 +21,7 @@ export class EnvService {
     const command = new EnvCommand(null);
     const readCommands = command.buildReadCommandInputs();
     let items = (await command.read(readCommands)).flat();
-    return items.map((item) => new EnvVariableItem(item));
+    return items.map((item) => new EnvVariableItem(item)).sort((a, b) => b.createdAt - a.createdAt);
   }
 
 }

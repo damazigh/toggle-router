@@ -1,7 +1,7 @@
 export class EnvVariableItem {
     name: string
     description: string
-    createdAt: string
+    createdAt: number
     secret: boolean
     value: any
     type: string
