@@ -88,9 +88,7 @@ export class EnvCommand extends AbstractDynamoCommand implements CreateDynamoCom
         event: event,
         PK: PK,
         SK: `HISTORY#${uuid()}#${metadata.appliesTo || SupportedAppliesTo.GRANULAR}`,
-        changes: [
-          changes
-        ]
+        changes: changes
       }
     }
     return item;
