@@ -1,9 +1,10 @@
 import { Injectable } from '@nestjs/common';
 import { EnvCommand } from './db/command/impl/env.command';
 import { CreateEnv } from './inout/in/create_env';
-import { GetEnv } from './inout/in/get_env';
+import { FilterEnv } from './inout/in/filter_env';
 import { CreateEnvOutput } from './inout/out/create_env_output';
 import { EnvOutput } from './inout/out/env_output';
+import { HistoryOutput } from './inout/out/history_output';
 import { ToggleOutput } from './inout/out/toggle_output';
 
 @Injectable()
@@ -26,8 +27,8 @@ export class EnvService {
     return envs.map((env) => new EnvOutput(env, toggles[env.PK])).sort((a, b) => b.createdAt - a.createdAt);
   }
 
-  public async getEnv(getEnv: GetEnv) {
-    const command = new EnvCommand(getEnv);
+  public async getEnv(filterEnv: FilterEnv) {
+    const command = new EnvCommand(filterEnv);
     command.validateForQueryOne();
     const queryCommand = command.buildQueryCommandInputs();
     let items = (await command.query(queryCommand)).flat();
@@ -48,6 +49,16 @@ export class EnvService {
       }
     });
     return [envs, toggles];
+  }
+
+
+  public async getEnvHistory(filterEnv: FilterEnv) {
+    const command = new EnvCommand(filterEnv);
+    command.validateForQueryOne();
+    const queryCommand = command.buildQueryCommandInputs();
+    let items = (await command.query(queryCommand)).flat();
+    let historyItems = items.filter((item) => item.changes != null);
+    return historyItems.map((item) => new HistoryOutput(item));
   }
 
 }

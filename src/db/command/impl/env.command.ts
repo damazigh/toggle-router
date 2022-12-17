@@ -8,20 +8,20 @@ import { CreateDynamoCommand } from "../create.dynamo.command";
 import { ReadDynamoCommand } from "../read.dynamo.command";
 import { ReleaseToggleCommand } from "./release-toggle.command";
 import { CreateEnv } from "src/inout/in/create_env";
-import { GetEnv } from "src/inout/in/get_env";
+import { FilterEnv } from "src/inout/in/filter_env";
 
 
 export class EnvCommand extends AbstractDynamoCommand implements CreateDynamoCommand, ReadDynamoCommand {
 
   private createEnvData: CreateEnv;
-  private getEnvData: GetEnv;
+  private filterEnvData: FilterEnv;
   toggleSortKey?: string;
 
 
-  constructor(data: CreateEnv | GetEnv) {
+  constructor(data: CreateEnv | FilterEnv) {
     super();
     this.createEnvData = data as CreateEnv;
-    this.getEnvData = data as GetEnv;
+    this.filterEnvData = data as FilterEnv;
   }
 
   public validateForCreation() {
@@ -97,7 +97,7 @@ export class EnvCommand extends AbstractDynamoCommand implements CreateDynamoCom
   }
 
   buildQueryCommandInputs(): QueryCommandInput[] {
-    if (this.getEnvData != null) {
+    if (this.filterEnvData != null) {
       return this.buildCreateCommandInputsForOne();
     }
     return this.buildQueryCommandInputsForAll();
@@ -129,7 +129,7 @@ export class EnvCommand extends AbstractDynamoCommand implements CreateDynamoCom
   }
 
   public validateForQueryOne() {
-    if (this.getEnvData.key == null)
+    if (this.filterEnvData.key == null)
       throw new PreconditionFailedException('key must be specified to get an env');
   }
 
@@ -138,7 +138,7 @@ export class EnvCommand extends AbstractDynamoCommand implements CreateDynamoCom
       TableName: TABLE_NAME,
       KeyConditionExpression: "PK = :PK",
       ExpressionAttributeValues: {
-        ":PK": this.getEnvData.key
+        ":PK": this.filterEnvData.key
       }
     };
     return [command];
