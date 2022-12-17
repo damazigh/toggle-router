@@ -40,7 +40,7 @@ export class EnvService {
     command.validateForGet();
     const getCommand = command.buildGetCommandInput();
     let item = await command.read(getCommand);
-    return item ? new EnvOutput(item, null) : {};
+    return item ? new EnvOutput(item) : {};
   }
 
 }

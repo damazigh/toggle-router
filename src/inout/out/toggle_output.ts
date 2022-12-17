@@ -1,10 +1,10 @@
 export class ToggleOutput {
-    key: string
+    toggleSortKey: string
     toggleType: string
     appliesTo: string
 
     constructor(item: any) {
-        this.key = item.SK;
+        this.toggleSortKey = item.SK;
         this.toggleType = item.toggleType;
         this.appliesTo = item.appliesTo;
     }

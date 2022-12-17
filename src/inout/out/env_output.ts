@@ -6,9 +6,10 @@ export class EnvOutput {
     secret: boolean
     value: any
     type: string
-    toggle: any
+    appliesTo?: string
+    toggle?: any
 
-    constructor(item: any, toggle: any) {
+    constructor(item: any, toggle?: any) {
       this.key = item.PK;
       this.name = item.name;
       this.description = item.description;
@@ -17,6 +18,9 @@ export class EnvOutput {
       this.value = item.value;
       this.type = item.envType;
       this.toggle = toggle;
+      if (toggle == null) {
+        this.appliesTo = item.appliesTo;
+      }
     }
 
 }
