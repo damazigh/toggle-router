@@ -26,4 +26,8 @@ export enum SupportedEntities {
 }
 
 export const TABLE_NAME = 'ENV';
-export const ENV_TYPE_INDEX = 'ENV_TYPE_INDEX';
+
+export enum GlobalSecondaryIndexes {
+  ENV_TYPE_INDEX = 'ENV_TYPE_INDEX',
+  TOGGLE_TYPE_INDEX = 'TOGGLE_TYPE_INDEX'
+}

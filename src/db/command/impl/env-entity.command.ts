@@ -7,7 +7,7 @@ import { BatchWriteDynamoCommand } from "../batch-write.dynamo.command";
 
 export class EnvEntityCommand extends AbstractDynamoCommand implements BatchWriteDynamoCommand {
   
-  constructor(private object: CreateEnvEntity []) {
+  constructor(private object: CreateEnvEntity[]) {
     super();
   }
 

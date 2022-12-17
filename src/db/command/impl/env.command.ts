@@ -1,6 +1,6 @@
 import { GetCommandInput, PutCommandInput, QueryCommandInput } from "@aws-sdk/lib-dynamodb";
 import { PreconditionFailedException, UnprocessableEntityException } from "@nestjs/common";
-import { SupportedAppliesToForBasic, SupportedEnvType, TABLE_NAME, ENV_TYPE_INDEX } from "src/enum/constant";
+import { SupportedAppliesToForBasic, SupportedEnvType, TABLE_NAME, SupportedToggleType, GlobalSecondaryIndexes } from "src/enum/constant";
 import { Utils } from "src/util/utils";
 import { uuid } from "uuidv4";
 import { AbstractDynamoCommand } from "../abstract.command";
@@ -98,11 +98,21 @@ export class EnvCommand extends AbstractDynamoCommand implements CreateDynamoCom
     Object.values(SupportedEnvType).forEach((envType) =>
       commands.push({
         TableName: TABLE_NAME,
-        IndexName: ENV_TYPE_INDEX,
-        KeyConditionExpression: `envType = :env_type`,
+        IndexName: GlobalSecondaryIndexes.ENV_TYPE_INDEX,
+        KeyConditionExpression: "envType = :env_type",
         ExpressionAttributeValues: {
           ":env_type": envType
         }    
+      })
+    );
+    Object.values(SupportedToggleType).forEach((toggleType) =>
+      commands.push({
+        TableName: TABLE_NAME,
+        IndexName: GlobalSecondaryIndexes.TOGGLE_TYPE_INDEX,
+        KeyConditionExpression: "toggleType = :toggleType",
+        ExpressionAttributeValues: {
+          ":toggleType": toggleType
+        }
       })
     );
     return commands;

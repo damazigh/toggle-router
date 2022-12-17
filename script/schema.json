@@ -79,10 +79,6 @@
         {
           "AttributeName": "toggleType",
           "KeyType": "HASH"
-        },
-        {
-          "AttributeName": "id",
-          "KeyType": "RANGE"
         }
       ],
       "Projection": {
