@@ -94,6 +94,13 @@ export class EnvCommand extends AbstractDynamoCommand implements CreateDynamoCom
   }
 
   buildQueryCommandInputs(): QueryCommandInput[] {
+    if (this.getEnvData != null) {
+      return this.buildCreateCommandInputsForOne();
+    }
+    return this.buildQueryCommandInputsForAll();
+  }
+
+  buildQueryCommandInputsForAll(): QueryCommandInput[] {
     var commands = [];
     Object.values(SupportedEnvType).forEach((envType) =>
       commands.push({
@@ -118,20 +125,20 @@ export class EnvCommand extends AbstractDynamoCommand implements CreateDynamoCom
     return commands;
   }
 
-  public validateForGet() {
+  public validateForQueryOne() {
     if (this.getEnvData.key == null)
       throw new PreconditionFailedException('key must be specified to get an env');
   }
 
-  buildGetCommandInput(): GetCommandInput {
+  buildCreateCommandInputsForOne(): QueryCommandInput[] {
     const command = {
       TableName: TABLE_NAME,
-      Key: {
-        PK: this.getEnvData.key,
-        SK: this.getEnvData.key,
+      KeyConditionExpression: "PK = :PK",
+      ExpressionAttributeValues: {
+        ":PK": this.getEnvData.key
       }
     };
-    return command;
+    return [command];
   }
   
 }

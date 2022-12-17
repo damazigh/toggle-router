@@ -20,16 +20,7 @@ export class EnvService {
     const queryCommands = command.buildQueryCommandInputs();
     let items = (await command.query(queryCommands)).flat();
 
-    // distinguish between envs and toggles
-    var envs = [];
-    var toggles = {};
-    items.forEach((item) => {
-      if (item.toggleType != null) {
-        toggles[item.PK] = new ToggleOutput(item);
-      } else {
-        envs.push(item);
-      }
-    });
+    const [envs, toggles] = this.envAndToggles(items);
 
     // map for output, and sort by creation date
     return envs.map((env) => new EnvOutput(env, toggles[env.PK])).sort((a, b) => b.createdAt - a.createdAt);
@@ -37,10 +28,25 @@ export class EnvService {
 
   public async getEnv(getEnv: GetEnv) {
     const command = new EnvCommand(getEnv);
-    command.validateForGet();
-    const getCommand = command.buildGetCommandInput();
-    let item = await command.read(getCommand);
-    return item ? new EnvOutput(item) : {};
+    command.validateForQueryOne();
+    const queryCommand = command.buildQueryCommandInputs();
+    let items = (await command.query(queryCommand)).flat();
+    const [envs, toggles] = this.envAndToggles(items);
+    const env = envs.length > 0 ? envs[0] : null;
+    return env != null ? new EnvOutput(env, toggles[env.PK]) : {};
+  }
+
+  private envAndToggles(items: any): [any[], {}] {
+    var envs = [];
+    var toggles = {};
+    items.forEach((item: any) => {
+      if (item.toggleType != null) {
+        toggles[item.PK] = new ToggleOutput(item);
+      } else if (item.envType != null) {
+        envs.push(item);
+      }
+    });
+    return [envs, toggles];
   }
 
 }
