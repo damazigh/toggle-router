@@ -1,4 +1,5 @@
 export class EnvVariableItem {
+    key: string
     name: string
     description: string
     createdAt: number
@@ -7,6 +8,7 @@ export class EnvVariableItem {
     type: string
 
     constructor(item: any) {
+      this.key = item.PK;
       this.name = item.name;
       this.description = item.description;
       this.createdAt = item.createdAtTimestamp;
