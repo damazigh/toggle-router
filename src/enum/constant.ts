@@ -28,6 +28,7 @@ export enum SupportedEntities {
 export const TABLE_NAME = 'ENV';
 
 export enum GlobalSecondaryIndexes {
+  INVERTED_INDEX = 'INVERTED_INDEX',
   ENV_TYPE_INDEX = 'ENV_TYPE_INDEX',
   TOGGLE_TYPE_INDEX = 'TOGGLE_TYPE_INDEX'
 }

@@ -1,7 +1,7 @@
 import { Body, Controller, Get, Param, Post, Query } from '@nestjs/common';
 import { CreateEnv } from './inout/in/create_env';
 import { EnvService } from './env.service';
-import { GetEnv } from './inout/in/get_env';
+import { FilterEnv } from './inout/in/filter_env';
 
 
 @Controller('env')
@@ -22,8 +22,14 @@ export class EnvController {
   }
 
   @Get(':key')
-  public async env(@Param() getEnv: GetEnv) {
-    const res = await this.envService.getEnv(getEnv);
+  public async env(@Param() filterEnv: FilterEnv) {
+    const res = await this.envService.getEnv(filterEnv);
+    return res;
+  }
+
+  @Get(':key/history')
+  public async envHistory(@Param() filterEnv: FilterEnv) {
+    const res = await this.envService.getEnvHistory(filterEnv);
     return res;
   }
 

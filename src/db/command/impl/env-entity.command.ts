@@ -1,18 +1,23 @@
-import { BatchWriteCommandInput } from "@aws-sdk/lib-dynamodb";
-import { SupportedEntities, TABLE_NAME } from "src/enum/constant";
+import { BatchWriteCommandInput, QueryCommandInput } from "@aws-sdk/lib-dynamodb";
+import { GlobalSecondaryIndexes, SupportedEntities, TABLE_NAME } from "src/enum/constant";
 import { CreateEnvEntity } from "src/inout/in/create-env-entity.model";
+import { GetEnvEntities } from "src/inout/in/get_env_entities";
 import { Validator } from "src/util/validator";
 import { AbstractDynamoCommand } from "../abstract.command";
 import { BatchWriteDynamoCommand } from "../batch-write.dynamo.command";
 
 export class EnvEntityCommand extends AbstractDynamoCommand implements BatchWriteDynamoCommand {
-  
-  constructor(private object: CreateEnvEntity[]) {
+  private createObject: CreateEnvEntity[];
+  private getObject: GetEnvEntities;
+
+  constructor(private object: CreateEnvEntity[] | GetEnvEntities) {
     super();
+    this.createObject = object as CreateEnvEntity[];
+    this.getObject = object as GetEnvEntities;
   }
 
   public validateForCreation() {
-    const arr = this.object as CreateEnvEntity[];
+    const arr = this.createObject as CreateEnvEntity[];
     Validator.maxLength(arr, 15);
     arr.forEach(data => {
       Validator.require(data, 'entityType');
@@ -24,7 +29,7 @@ export class EnvEntityCommand extends AbstractDynamoCommand implements BatchWrit
   }
 
   buildBatchWriteCommandInput(): BatchWriteCommandInput {
-    const arr = this.object as CreateEnvEntity[];
+    const arr = this.createObject as CreateEnvEntity[];
 
     const params = {
       RequestItems: {}
@@ -36,6 +41,8 @@ export class EnvEntityCommand extends AbstractDynamoCommand implements BatchWrit
             PK: `${data.entityType}#${data.entityId}`,
             SK: `${data.toggleSortKey}`,
             value: data.value,
+            entityType: data.entityType,
+            entityId: data.entityId
           }
         }
       }
@@ -44,4 +51,25 @@ export class EnvEntityCommand extends AbstractDynamoCommand implements BatchWrit
     params.RequestItems[TABLE_NAME] = items;
     return params;
   }
+
+
+  public validateForQuery() {
+    Validator.require(this.getObject, 'toggleKey');
+  }
+
+  buildQueryCommands(): QueryCommandInput[] {
+    var commands = [];
+    commands.push({
+      TableName: TABLE_NAME,
+      IndexName: GlobalSecondaryIndexes.INVERTED_INDEX,
+      KeyConditionExpression: "SK = :sk",
+      FilterExpression: "attribute_not_exists(toggleType) or toggleType = :nullValue",
+      ExpressionAttributeValues: {
+        ":sk": this.getObject.toggleKey,
+        ":nullValue": null
+      }
+    })
+    return commands;
+  }
+
 }
