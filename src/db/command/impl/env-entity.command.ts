@@ -1,5 +1,5 @@
 import { BatchWriteCommandInput, QueryCommandInput } from "@aws-sdk/lib-dynamodb";
-import { GlobalSecondaryIndexes, SupportedEntities, TABLE_NAME } from "src/enum/constant";
+import { GlobalSecondaryIndexes, MAX_CREATED_ENTITY_PER_REQUEST, SupportedEntities, TABLE_NAME } from "src/enum/constant";
 import { CreateEnvEntity } from "src/inout/in/create-env-entity.model";
 import { GetEnvEntities } from "src/inout/in/get_env_entities";
 import { Validator } from "src/util/validator";
@@ -18,7 +18,7 @@ export class EnvEntityCommand extends AbstractDynamoCommand implements BatchWrit
 
   public validateForCreation() {
     const arr = this.createObject as CreateEnvEntity[];
-    Validator.maxLength(arr, 15);
+    Validator.maxLength(arr, MAX_CREATED_ENTITY_PER_REQUEST);
     arr.forEach(data => {
       Validator.require(data, 'entityType');
       Validator.require(data, 'entityId');

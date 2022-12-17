@@ -13,8 +13,14 @@ export class Validator {
   }
 
   public static maxLength(arr: any[], maxLength: number) {
-    if(arr.length > maxLength) {
+    if(arr && arr.length > maxLength) {
       throw new UnprocessableEntityException(`Maximum size is ${maxLength}`);
+    }
+  }
+
+  public static notPresent(obj: any, field: string) {
+    if (!!obj[field]) {
+      throw new UnprocessableEntityException(`Field ${field} is not authorized in the current context`);
     }
   }
 }

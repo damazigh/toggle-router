@@ -32,3 +32,5 @@ export enum GlobalSecondaryIndexes {
   ENV_TYPE_INDEX = 'ENV_TYPE_INDEX',
   TOGGLE_TYPE_INDEX = 'TOGGLE_TYPE_INDEX'
 }
+
+export const MAX_CREATED_ENTITY_PER_REQUEST = 20;

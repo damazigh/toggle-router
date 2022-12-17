@@ -1,5 +1,6 @@
 import { ReleaseToggle } from "src/db/model/toggle/release_toggle";
 import { SupportedRegions } from "src/db/model/toggle/toggle";
+import { CreateEnvEntityLight } from "./create-env-entity-light";
 
 export class CreateEnv {
   name: string;
@@ -10,4 +11,5 @@ export class CreateEnv {
   toggle?: ReleaseToggle;
   appliesTo?: SupportedRegions;
   value?: string;
+  entities?: CreateEnvEntityLight[];
 }

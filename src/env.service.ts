@@ -1,5 +1,9 @@
-import { Injectable } from '@nestjs/common';
+import { ConflictException, Injectable } from '@nestjs/common';
+import { CommonService } from './common.service';
 import { EnvCommand } from './db/command/impl/env.command';
+import { SupportedAppliesTo } from './enum/constant';
+import { EnvEntityService } from './env-entity.service';
+import { CreateEnvEntity } from './inout/in/create-env-entity.model';
 import { CreateEnv } from './inout/in/create_env';
 import { FilterEnv } from './inout/in/filter_env';
 import { CreateEnvOutput } from './inout/out/create_env_output';
@@ -9,12 +13,28 @@ import { ToggleOutput } from './inout/out/toggle_output';
 
 @Injectable()
 export class EnvService {
+
+  constructor(
+    private commonService: CommonService,
+    private envEntityService: EnvEntityService
+    ) {}
   
   public async create(createEnv: CreateEnv) {
     const command = new EnvCommand(createEnv)
     command.validateForCreation();
     const createCommands = command.buildCreateCommandInputs();
     await command.create(createCommands, true);
+
+    if (createEnv.entities) {
+      const x = (await this.commonService.searchByPKAndSkBeginWith(`ENV#${createEnv.name}`, 'TOGGLE#'));
+      const items = x.Items;
+      if (items && items.length !== 1) {
+        throw new ConflictException('Cannot determine one toggle to associate parameter with');
+      }
+      const item = items[0];
+      const entities = createEnv.entities.map(e => CreateEnvEntity.fromLight(e, item.SK));
+      await this.envEntityService.create(entities);
+    }
     return new CreateEnvOutput(`ENV#${createEnv.name}`, command.toggleSortKey);
   }
 

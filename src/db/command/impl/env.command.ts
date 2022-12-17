@@ -1,6 +1,6 @@
 import { GetCommandInput, PutCommandInput, QueryCommandInput } from "@aws-sdk/lib-dynamodb";
 import { PreconditionFailedException, UnprocessableEntityException } from "@nestjs/common";
-import { SupportedAppliesToForBasic, SupportedEnvType, TABLE_NAME, SupportedToggleType, GlobalSecondaryIndexes, SupportedAppliesTo } from "src/enum/constant";
+import { SupportedAppliesToForBasic, SupportedEnvType, TABLE_NAME, SupportedToggleType, GlobalSecondaryIndexes, SupportedAppliesTo, MAX_CREATED_ENTITY_PER_REQUEST } from "src/enum/constant";
 import { Utils } from "src/util/utils";
 import { uuid } from "uuidv4";
 import { AbstractDynamoCommand } from "../abstract.command";
@@ -9,6 +9,7 @@ import { ReadDynamoCommand } from "../read.dynamo.command";
 import { ReleaseToggleCommand } from "./release-toggle.command";
 import { CreateEnv } from "src/inout/in/create_env";
 import { FilterEnv } from "src/inout/in/filter_env";
+import { Validator } from "src/util/validator";
 
 
 export class EnvCommand extends AbstractDynamoCommand implements CreateDynamoCommand, ReadDynamoCommand {
@@ -32,6 +33,9 @@ export class EnvCommand extends AbstractDynamoCommand implements CreateDynamoCom
         throw new UnprocessableEntityException('toggle parameter is required');
       if (this.createEnvData.value)
         throw new UnprocessableEntityException('Toggles should not have a top value');
+      
+      Validator.maxLength(this.createEnvData.entities, MAX_CREATED_ENTITY_PER_REQUEST);
+
     } else if (this.createEnvData.type === SupportedEnvType.BASIC) {
       if (!this.createEnvData.value)
         throw new UnprocessableEntityException('basic env should have a value');
@@ -39,6 +43,8 @@ export class EnvCommand extends AbstractDynamoCommand implements CreateDynamoCom
         throw new UnprocessableEntityException(`You need to specify the scope of this env with the appliesTo parameter (accepted values: ${Object.values(SupportedAppliesToForBasic)})`);
       if (!Object.values(SupportedAppliesToForBasic).includes(this.createEnvData.appliesTo as SupportedAppliesToForBasic))
         throw new UnprocessableEntityException('Unsupported appliesTo for basic env');
+      
+      Validator.notPresent(this.createEnvData, 'entities');
     } else {
       throw new UnprocessableEntityException(`Env should be of one of these types ${Object.values(SupportedEnvType)}`);
     }
