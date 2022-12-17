@@ -1,5 +1,5 @@
-import { ReleaseToggle } from "./toggle/release_toggle";
-import { SupportedRegions } from "./toggle/toggle";
+import { ReleaseToggle } from "src/db/model/toggle/release_toggle";
+import { SupportedRegions } from "src/db/model/toggle/toggle";
 
 export class CreateEnv {
   name: string;

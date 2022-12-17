@@ -1,5 +1,5 @@
 import { Body, Controller, Get, Post, Query } from '@nestjs/common';
-import { CreateEnv } from './db/model/create_env';
+import { CreateEnv } from './inout/in/create_env';
 import { EnvService } from './env.service';
 
 

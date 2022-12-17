@@ -1,8 +1,7 @@
 import { Injectable } from '@nestjs/common';
-import { response } from 'express';
 import { EnvCommand } from './db/command/impl/env.command';
-import { CreateEnv } from './db/model/create_env';
-import { EnvVariableItem } from './db/model/env_variable_item';
+import { CreateEnv } from './inout/in/create_env';
+import { EnvVariableItem } from './inout/out/env_variable_item';
 
 @Injectable()
 export class EnvService {

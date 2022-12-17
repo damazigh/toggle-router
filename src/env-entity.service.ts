@@ -1,7 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { EnvEntityCommand } from './db/command/impl/env-entity.command';
-import { CreateEnvEntity } from './db/model/create-env-entity.model';
-import client from './db/client';
+import { CreateEnvEntity } from './inout/in/create-env-entity.model';
 
 @Injectable()
 export class EnvEntityService {

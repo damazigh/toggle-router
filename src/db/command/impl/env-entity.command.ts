@@ -1,7 +1,6 @@
-import { PutRequest, WriteRequest } from "@aws-sdk/client-dynamodb";
-import {  BatchWriteCommandInput } from "@aws-sdk/lib-dynamodb";
-import { CreateEnvEntity } from "src/db/model/create-env-entity.model";
+import { BatchWriteCommandInput } from "@aws-sdk/lib-dynamodb";
 import { SupportedEntities, TABLE_NAME } from "src/enum/constant";
+import { CreateEnvEntity } from "src/inout/in/create-env-entity.model";
 import { Validator } from "src/util/validator";
 import { AbstractDynamoCommand } from "../abstract.command";
 import { BatchWriteDynamoCommand } from "../batch-write.dynamo.command";

@@ -7,7 +7,7 @@ import { AbstractDynamoCommand } from "../abstract.command";
 import { CreateDynamoCommand } from "../create.dynamo.command";
 import { ReadDynamoCommand } from "../read.dynamo.command";
 import { ReleaseToggleCommand } from "./release-toggle.command";
-import { CreateEnv } from "src/db/model/create_env";
+import { CreateEnv } from "src/inout/in/create_env";
 
 
 export class EnvCommand extends AbstractDynamoCommand implements CreateDynamoCommand, ReadDynamoCommand {

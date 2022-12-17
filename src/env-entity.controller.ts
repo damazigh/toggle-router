@@ -1,6 +1,6 @@
 import { Body, Controller, Post } from '@nestjs/common';
-import { CreateEnvEntity } from './db/model/create-env-entity.model';
 import { EnvEntityService } from './env-entity.service';
+import { CreateEnvEntity } from './inout/in/create-env-entity.model';
 
 @Controller('env-entity')
 export class EnvEntityController {
