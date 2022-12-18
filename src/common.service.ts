@@ -6,7 +6,7 @@ import { TABLE_NAME } from './enum/constant';
 @Injectable()
 export class CommonService {
   public async searchByPk(pk: string) {
-    const params = {
+    const params: QueryCommandInput = {
       TableName: TABLE_NAME,
       KeyConditionExpression: "PK = :PK",
       ExpressionAttributeValues: {
