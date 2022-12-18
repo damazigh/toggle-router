@@ -19,4 +19,4 @@ WORKDIR /usr/src/app
 # copy resources
 COPY --from=BUILD_IMAGE /usr/src/app/dist ./dist
 COPY --from=BUILD_IMAGE /usr/src/app/node_modules ./node_modules
-CMD npm run:start
+CMD npm run start
