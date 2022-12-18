@@ -1,12 +1,12 @@
 version: '3.7'
-
+networks:
+    fw_backend:
+        external: true
 services:
-  localstack:
-    container_name: localstack_hackwire
-    image: localstack/localstack:1.1.0
+  toggle-router:
+    container_name: toggle-router
+    image: toggle-router
     networks:
-      - default
+      - fw_backend
     ports:
-      - '4588:4566'
-    env_file:
-      localstack.env
+      - '8009:8009'

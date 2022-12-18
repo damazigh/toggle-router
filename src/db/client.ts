@@ -5,6 +5,10 @@ import { doc } from 'prettier';
 const dynamodbClient = new DynamoDBClient({
   region: 'us-east-1',
   endpoint: 'http://localstack:4566',
+  credentials: {
+    accessKeyId: 'test',
+    secretAccessKey: 'test'
+  }
 });
 
 const docClient = DynamoDBDocumentClient.from(dynamodbClient);
