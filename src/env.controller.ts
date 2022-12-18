@@ -1,8 +1,10 @@
-import { Body, Controller, Get, Param, Post, Query } from '@nestjs/common';
+import { Body, Controller, Get, Param, Post, Put, Query } from '@nestjs/common';
 import { CreateEnv } from './inout/in/create_env';
 import { EnvService } from './env.service';
 import { FilterEnv } from './inout/in/filter_env';
 import { SupportedAppliesTo } from './enum/constant';
+import { UpdateCommand } from '@aws-sdk/lib-dynamodb';
+import { UpdateEnv } from './inout/in/update_env';
 
 
 @Controller('env')
@@ -39,4 +41,13 @@ export class EnvController {
     return res;
   }
 
+  @Put(':key')
+  public async updateEnv(@Param() params: string, @Body() body: CreateEnv) {
+    var updateEnv = new UpdateEnv();
+    updateEnv.key = params["key"];
+    updateEnv.params = body;
+
+    const res = await this.envService.update(updateEnv);
+    return res;
+  }
 }

@@ -1,4 +1,5 @@
 import { ConflictException, Injectable } from '@nestjs/common';
+import { stringify } from 'querystring';
 import { CommonService } from './common.service';
 import { EnvCommand } from './db/command/impl/env.command';
 import { SupportedAppliesTo, TABLE_NAME } from './enum/constant';
@@ -6,6 +7,7 @@ import { EnvEntityService } from './env-entity.service';
 import { CreateEnvEntity } from './inout/in/create-env-entity.model';
 import { CreateEnv } from './inout/in/create_env';
 import { FilterEnv } from './inout/in/filter_env';
+import { UpdateEnv } from './inout/in/update_env';
 import { CreateEnvOutput } from './inout/out/create_env_output';
 import { EnvOutput } from './inout/out/env_output';
 import { HistoryOutput } from './inout/out/history_output';
@@ -36,6 +38,14 @@ export class EnvService {
       await this.envEntityService.create(entities);
     }
     return new CreateEnvOutput(`ENV#${createEnv.name}`, command.toggleSortKey);
+  }
+
+  public async update(updateEnv: UpdateEnv) {
+    const command = new EnvCommand(updateEnv);
+    command.validateForUpdate();
+
+    const updateCommands = command.buildUpdateCommandInputs();
+    await command.update(updateCommands);
   }
 
   public async all() {
@@ -109,4 +119,6 @@ export class EnvService {
     return historyItems.map((item) => new HistoryOutput(item));
   }
 
+
 }
+

@@ -1,4 +1,4 @@
-import { GetCommandInput, PutCommandInput, QueryCommandInput } from "@aws-sdk/lib-dynamodb";
+import { PutCommandInput, QueryCommandInput, UpdateCommandInput } from "@aws-sdk/lib-dynamodb";
 import { PreconditionFailedException, UnprocessableEntityException } from "@nestjs/common";
 import { SupportedAppliesToForBasic, SupportedEnvType, TABLE_NAME, SupportedToggleType, GlobalSecondaryIndexes, SupportedAppliesTo, MAX_CREATED_ENTITY_PER_REQUEST } from "src/enum/constant";
 import { Utils } from "src/util/utils";
@@ -10,19 +10,22 @@ import { ReleaseToggleCommand } from "./release-toggle.command";
 import { CreateEnv } from "src/inout/in/create_env";
 import { FilterEnv } from "src/inout/in/filter_env";
 import { Validator } from "src/util/validator";
+import { UpdateEnv } from "src/inout/in/update_env";
 
 
 export class EnvCommand extends AbstractDynamoCommand implements CreateDynamoCommand, ReadDynamoCommand {
 
   private createEnvData: CreateEnv;
   private filterEnvData: FilterEnv;
+  private updateEnvData: UpdateEnv;
   toggleSortKey?: string;
 
 
-  constructor(data: CreateEnv | FilterEnv) {
+  constructor(data: CreateEnv | FilterEnv | UpdateEnv) {
     super();
     this.createEnvData = data as CreateEnv;
     this.filterEnvData = data as FilterEnv;
+    this.updateEnvData = data as UpdateEnv;
   }
 
   public validateForCreation() {
@@ -146,6 +149,36 @@ export class EnvCommand extends AbstractDynamoCommand implements CreateDynamoCom
       }
     };
     return [command];
+  }
+
+
+  public validateForUpdate() {
+    Validator.require(this.updateEnvData.params, 'appliedTo');
+  }
+
+  buildUpdateCommandInputs(): UpdateCommandInput[] {
+    let updateExpression='set';
+    let ExpressionAttributeNames={};
+    let ExpressionAttributeValues = {};
+    for (const property in this.updateEnvData.params) {
+      updateExpression += ` #${property} = :${property} ,`;
+      ExpressionAttributeNames['#'+property] = property ;
+      ExpressionAttributeValues[':'+property]=this.updateEnvData.params[property];
+    }
+
+    updateExpression = updateExpression.slice(0, -1);
+    const params = {
+      TableName: TABLE_NAME,
+      Key: {
+       PK: this.updateEnvData.key,
+       SK: `${this.updateEnvData.key}#${this.updateEnvData.params["appliedTo"] || SupportedAppliesTo.GRANULAR}`
+      },
+      UpdateExpression: updateExpression,
+      ExpressionAttributeNames: ExpressionAttributeNames,
+      ExpressionAttributeValues: ExpressionAttributeValues
+    };
+
+    return [params];
   }
   
 }
