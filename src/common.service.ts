@@ -31,7 +31,7 @@ export class CommonService {
     return this.search(params)
   }
 
-  private async search(params) {
+  public async search(params) {
     return client.send(new QueryCommand(params));
   }
 

@@ -1,7 +1,7 @@
 import { ConflictException, Injectable } from '@nestjs/common';
 import { CommonService } from './common.service';
 import { EnvCommand } from './db/command/impl/env.command';
-import { SupportedAppliesTo } from './enum/constant';
+import { SupportedAppliesTo, TABLE_NAME } from './enum/constant';
 import { EnvEntityService } from './env-entity.service';
 import { CreateEnvEntity } from './inout/in/create-env-entity.model';
 import { CreateEnv } from './inout/in/create_env';
@@ -56,6 +56,34 @@ export class EnvService {
     const [envs, toggles] = this.envAndToggles(items);
     const env = envs.length > 0 ? envs[0] : null;
     return env != null ? new EnvOutput(env, toggles[env.PK]) : {};
+  }
+
+  public async getEnvV2(name: string, appliesTo: SupportedAppliesTo) {
+    const filterEnv = new FilterEnv();
+    filterEnv.name = name;
+    filterEnv.appliesTo = appliesTo;
+
+    let items = null;
+
+    const key = `ENV#${name}`;
+
+    for (let val of [appliesTo, SupportedAppliesTo.ALL]) {
+      const sk = `${key}#${val}`;
+      const params = {
+        TableName: TABLE_NAME,
+        KeyConditionExpression: "PK = :PK and SK = :SK",
+        ExpressionAttributeValues: {
+          ':PK': key,
+          ':SK': sk
+        }
+      };
+      items = (await this.commonService.search(params)).Items;
+      if (items) {
+        break;
+      }
+    }
+
+    return items[0]
   }
 
   private envAndToggles(items: any): [any[], {}] {
