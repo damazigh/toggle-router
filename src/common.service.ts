@@ -50,6 +50,5 @@ export class CommonService {
       }
     };
     return this.search(params)
-  }
-
+   }
 }

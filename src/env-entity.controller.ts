@@ -1,5 +1,6 @@
 import { Body, Controller, Get, Param, Post, Query } from '@nestjs/common';
 import { CommonService } from './common.service';
+import { SupportedAppliesTo } from './enum/constant';
 import { EnvEntityService } from './env-entity.service';
 import { CreateEnvEntity } from './inout/in/create-env-entity.model';
 import { GetEnvEntities } from './inout/in/get_env_entities';
@@ -25,6 +26,11 @@ export class EnvEntityController {
   @Get('/entities/:entityId')
   public async toggleByEntity(@Param('entityId') entityId: string, @Query('type') type: string) {
     return (await this.commonService.searchByPk(`${type.toUpperCase()}#${entityId}`)).Items;
+  }
+
+  @Get(':name/entities/:entityId')
+  public async entityByIdTypeAndName(@Param('entityId') entityId: string, @Param('name') name, @Query('type') type: string) {
+    return await this.envEntityService.getOne(entityId, type, name);
   }
 
 }
