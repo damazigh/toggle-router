@@ -20,7 +20,8 @@ export class ReleaseToggleCommand extends AbstractDynamoCommand implements Creat
         PK: `ENV#${opts.envName}`,
         SK: this.sortKey,
         toggleType: this.toggle.toggleType,
-        appliesTo: SupportedAppliesTo.GRANULAR
+        appliesTo: SupportedAppliesTo.GRANULAR,
+        name: opts.envName
       }
     };
     this.commands.push(cmd);

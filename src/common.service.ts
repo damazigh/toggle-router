@@ -1,7 +1,7 @@
 import { GetCommand, GetCommandInput, QueryCommand, QueryCommandInput } from '@aws-sdk/lib-dynamodb';
 import { Injectable } from '@nestjs/common';
 import client from './db/client';
-import { TABLE_NAME } from './enum/constant';
+import { GlobalSecondaryIndexes, TABLE_NAME } from './enum/constant';
 
 @Injectable()
 export class CommonService {
@@ -33,6 +33,23 @@ export class CommonService {
 
   public async search(params) {
     return client.send(new QueryCommand(params));
+  }
+
+
+  public async searchBySKAndPKBeginWith(sk: string, startsWith: string) {
+    const params: QueryCommandInput = {
+      TableName: TABLE_NAME,
+      IndexName: GlobalSecondaryIndexes.INVERTED_INDEX,
+      KeyConditionExpression: "SK = :SK and begins_with(#PK, :startsWith)",
+      ExpressionAttributeValues: {
+        ":SK": sk,
+        ":startsWith": startsWith
+      },
+      ExpressionAttributeNames: {
+        '#PK': 'PK'
+      }
+    };
+    return this.search(params)
   }
 
 }

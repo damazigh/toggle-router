@@ -28,7 +28,7 @@ export class EnvEntityCommand extends AbstractDynamoCommand implements BatchWrit
     });
   }
 
-  buildBatchWriteCommandInput(): BatchWriteCommandInput {
+  buildBatchWriteCommandInput(opts?): BatchWriteCommandInput {
     const arr = this.createObject as CreateEnvEntity[];
 
     const params = {
@@ -42,7 +42,8 @@ export class EnvEntityCommand extends AbstractDynamoCommand implements BatchWrit
             SK: `${data.toggleSortKey}`,
             value: data.value,
             entityType: data.entityType,
-            entityId: data.entityId
+            entityId: data.entityId,
+            name: opts.envName
           }
         }
       }
