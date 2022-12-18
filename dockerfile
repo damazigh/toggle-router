@@ -19,4 +19,7 @@ WORKDIR /usr/src/app
 # copy resources
 COPY --from=BUILD_IMAGE /usr/src/app/dist ./dist
 COPY --from=BUILD_IMAGE /usr/src/app/node_modules ./node_modules
-CMD npm run start
+COPY --from=BUILD_IMAGE /usr/src/app/bootstrap.sh .
+RUN chmod +x ./bootstrap.sh
+RUN ls -lart 
+CMD ./bootstrap.sh
