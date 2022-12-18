@@ -140,12 +140,9 @@ export class EnvCommand extends AbstractDynamoCommand implements CreateDynamoCom
   buildCreateCommandInputsForOne(): QueryCommandInput[] {
     const command = {
       TableName: TABLE_NAME,
-      KeyConditionExpression: "PK = :PK and begins_with(#SK, :starts_with)",
+      KeyConditionExpression: "PK = :PK",
       ExpressionAttributeValues: {
         ":PK": this.filterEnvData.key
-      },
-      ExpressionAttributeNames: {
-        '#SK': 'SK'
       }
     };
     return [command];
