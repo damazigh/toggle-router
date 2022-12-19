@@ -45,7 +45,7 @@ export class EnvService {
     command.validateForUpdate();
 
     const updateCommands = command.buildUpdateCommandInputs();
-    await command.update(updateCommands);
+    await command.update(updateCommands, true);
   }
 
   public async all() {

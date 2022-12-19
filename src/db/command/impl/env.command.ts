@@ -83,6 +83,27 @@ export class EnvCommand extends AbstractDynamoCommand implements CreateDynamoCom
   }
 
   mapItemToChange(event: string) {
+    var [changes, PK, appliesTo] = [{}, "", ""];
+    if (event == "CREATE") {
+      [changes, PK, appliesTo] = this.historyDataForCreate();
+    } else if (event == "UPDATE") {
+      [changes, PK, appliesTo] = this.historyDataForUpdate();
+    }
+
+    const item = {
+      TableName: TABLE_NAME,
+      Item: {
+        event: event,
+        eventTimestamp: Utils.unixTimestampNow(),
+        PK: PK,
+        SK: `HISTORY#${uuid()}#${appliesTo || SupportedAppliesTo.GRANULAR}`,
+        changes: changes
+      }
+    }
+    return item;
+  }
+
+  historyDataForCreate() {
     const metadata = this.commands[0].Item;
     const toggle = this.commands[1]?.Item;
     const { ['PK']: PK, ['SK']: _y, ...cleanedMetadata } = metadata
@@ -91,17 +112,19 @@ export class EnvCommand extends AbstractDynamoCommand implements CreateDynamoCom
       const { ['PK']: _a, ['SK']: _b, ...cleanedToggle } = toggle;
       changes = {...changes, ...cleanedToggle};
     }
-    const item = {
-      TableName: TABLE_NAME,
-      Item: {
-        event: event,
-        eventTimestamp: Utils.unixTimestampNow(),
-        PK: PK,
-        SK: `HISTORY#${uuid()}#${metadata.appliesTo || SupportedAppliesTo.GRANULAR}`,
-        changes: changes
-      }
-    }
-    return item;
+    return [changes, PK, metadata.appliesTo];
+  }
+
+  historyDataForUpdate() {
+    const { ['Key']: key, ['ExpressionAttributeNames']: names, ['ExpressionAttributeValues']: values,  ..._other } = this.commands[0];
+    const { ['PK']: PK, ['SK']: SK } = key;
+    let appliesTo = SK.split('#').pop();
+
+    let changes = {};
+    Object.keys(values).forEach(function(key, value) {
+      changes[key.substring(1)] = values[key];
+    });
+    return [changes, PK, appliesTo];
   }
 
   buildQueryCommandInputs(): QueryCommandInput[] {
@@ -168,7 +191,7 @@ export class EnvCommand extends AbstractDynamoCommand implements CreateDynamoCom
     }
 
     updateExpression = updateExpression.slice(0, -1);
-    const params = {
+    const command = {
       TableName: TABLE_NAME,
       Key: {
        PK: this.updateEnvData.key,
@@ -179,7 +202,8 @@ export class EnvCommand extends AbstractDynamoCommand implements CreateDynamoCom
       ExpressionAttributeValues: ExpressionAttributeValues
     };
 
-    return [params];
+    this.commands.push(command);
+    return [command];
   }
   
 }
