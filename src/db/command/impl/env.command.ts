@@ -58,11 +58,12 @@ export class EnvCommand extends AbstractDynamoCommand implements CreateDynamoCom
 
   buildCreateCommandInputs(): PutCommandInput[] {
 
+
     const metadataCommand = {
       TableName: TABLE_NAME,
       Item: {
         PK: `ENV#${this.createEnvData.name}`,
-        SK: `ENV#${this.createEnvData.name}#${this.createEnvData.appliesTo || SupportedAppliesTo.GRANULAR}`,
+        SK: `ENV#${this.createEnvData.name}#${this.createEnvData.appliesTo || (this.createEnvData.toggle as any).appliesTo || SupportedAppliesTo.GRANULAR}`,
         name: this.createEnvData.name,
         description: this.createEnvData.description,
         createdAtTimestamp: Utils.unixTimestampNow(),
