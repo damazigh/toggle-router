@@ -95,6 +95,7 @@ export class EnvCommand extends AbstractDynamoCommand implements CreateDynamoCom
       TableName: TABLE_NAME,
       Item: {
         event: event,
+        eventTimestamp: Utils.unixTimestampNow(),
         PK: PK,
         SK: `HISTORY#${uuid()}#${metadata.appliesTo || SupportedAppliesTo.GRANULAR}`,
         changes: changes
