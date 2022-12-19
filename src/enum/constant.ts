@@ -17,7 +17,8 @@ export enum SupportedEnvType {
 }
 
 export enum SupportedToggleType {
-  RELEASE_TOGGLE = 'RELEASE_TOGGLE'
+  RELEASE_TOGGLE = 'RELEASE_TOGGLE',
+  EXPERIMENT_TOGGLE = 'EXPERIMENT_TOGGLE'
 }
 
 export enum SupportedEntities {
@@ -35,3 +36,7 @@ export enum GlobalSecondaryIndexes {
 }
 
 export const MAX_CREATED_ENTITY_PER_REQUEST = 20;
+
+export enum SupportedExperimentOperator {
+  OP_IN = 'IN'
+}

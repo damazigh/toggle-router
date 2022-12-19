@@ -11,6 +11,9 @@ import { CreateEnv } from "src/inout/in/create_env";
 import { FilterEnv } from "src/inout/in/filter_env";
 import { Validator } from "src/util/validator";
 import { UpdateEnv } from "src/inout/in/update_env";
+import { ReleaseToggle } from "src/db/model/toggle/release_toggle";
+import { ExperimentToggle } from "src/db/model/toggle/experiment_toggle";
+import { ExperimentToggleCommand } from "./experiment-toggle.command";
 
 
 export class EnvCommand extends AbstractDynamoCommand implements CreateDynamoCommand, ReadDynamoCommand {
@@ -69,10 +72,7 @@ export class EnvCommand extends AbstractDynamoCommand implements CreateDynamoCom
 
     if (this.createEnvData.type === SupportedEnvType.TOGGLE) {
       this.commands.push(metadataCommand);
-      const releaseToggleCommand = new ReleaseToggleCommand(this.createEnvData.toggle);
-      this.toggleSortKey = releaseToggleCommand.sortKey;
-      const toggleCommand = releaseToggleCommand.buildCreateCommandInputs({ envName: this.createEnvData.name })[0];
-      this.commands.push(toggleCommand);
+      this.commands.push(this.handleToggle());
     } else {
       metadataCommand.Item['value'] = this.createEnvData.value;
       metadataCommand.Item['secret'] = this.createEnvData.secret;
@@ -80,6 +80,21 @@ export class EnvCommand extends AbstractDynamoCommand implements CreateDynamoCom
       this.commands.push(metadataCommand);
     }
     return this.commands;
+  }
+
+
+  private handleToggle() {
+    if (this.createEnvData?.toggle?.toggleType === SupportedToggleType.RELEASE_TOGGLE) {
+      const releaseToggleCommand = new ReleaseToggleCommand(this.createEnvData.toggle as ReleaseToggle);
+      this.toggleSortKey = releaseToggleCommand.sortKey;
+      return releaseToggleCommand.buildCreateCommandInputs({ envName: this.createEnvData.name })[0];
+    } else if (this.createEnvData.toggle?.toggleType === SupportedToggleType.EXPERIMENT_TOGGLE ) {
+      const experimentToggleCommand = new ExperimentToggleCommand(this.createEnvData.toggle as ExperimentToggle);
+      this.toggleSortKey = experimentToggleCommand.sortKey;
+      return experimentToggleCommand.buildCreateCommandInputs({ envName: this.createEnvData.name })[0];
+    } else {
+      throw new UnprocessableEntityException('Unsupported type');
+    }
   }
 
   mapItemToChange(event: string) {

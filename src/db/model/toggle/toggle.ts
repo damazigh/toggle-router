@@ -1,3 +1,4 @@
+import { SupportedToggleType } from "src/enum/constant";
 import { uuid } from "uuidv4";
 
 export abstract class Toggle {
@@ -5,8 +6,6 @@ export abstract class Toggle {
   constructor() {
     this.id = uuid();
   }
-  toggleType: 'release_toggle' | 'experiment_toggle' | 'ops_toggle';
+  toggleType: SupportedToggleType;
   id: string;
 }
-
-export type SupportedRegions = 'all' | 'us-east-1' | 'eu-west-3' | 'granular';
