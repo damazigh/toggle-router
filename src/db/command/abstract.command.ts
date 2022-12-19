@@ -27,11 +27,15 @@ export abstract class AbstractDynamoCommand implements Historisant {
     }
   }
 
-  async update(commands: UpdateCommandInput[]) {
+  async update(commands: UpdateCommandInput[], historize = false) {
     commands.forEach(async command => {
       let updateCommand = new UpdateCommand(command);
       await client.send(updateCommand)
     });
+
+    if (historize) {
+      await this.historize(this.mapItemToChange('UPDATE'));
+    }
   }
 
   async createBatch(command: BatchWriteCommandInput) {
