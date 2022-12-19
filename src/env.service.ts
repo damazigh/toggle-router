@@ -2,7 +2,7 @@ import { ConflictException, Injectable } from '@nestjs/common';
 import { stringify } from 'querystring';
 import { CommonService } from './common.service';
 import { EnvCommand } from './db/command/impl/env.command';
-import { GlobalSecondaryIndexes, SupportedAppliesTo, TABLE_NAME } from './enum/constant';
+import { GlobalSecondaryIndexes, SupportedAppliesTo, SupportedEnvType, TABLE_NAME } from './enum/constant';
 import { EnvEntityService } from './env-entity.service';
 import { CreateEnvEntity } from './inout/in/create-env-entity.model';
 import { CreateEnv } from './inout/in/create_env';
@@ -93,7 +93,26 @@ export class EnvService {
       }
     }
 
-    return items[0]
+    const res = items[0];
+    if (res.envType === SupportedEnvType.TOGGLE) {
+      // then fetch toggle
+      const params = {
+        TableName: TABLE_NAME,
+        KeyConditionExpression: "PK = :PK and begins_with(#SK, :startsWith)",
+        ExpressionAttributeValues: {
+          ':PK': key,
+          ':startsWith': 'TOGGLE',
+        },
+        ExpressionAttributeNames: {
+          '#SK': 'SK'
+        }
+      };
+      const toggles = (await this.commonService.search(params)).Items
+      if (toggles && toggles.length > 0) {
+        res.toggle = toggles[0];
+      }
+    }
+    return res;
   }
 
   public async allByAppliesTo(appliesTo: SupportedAppliesTo) {

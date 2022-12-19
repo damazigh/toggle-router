@@ -221,5 +221,4 @@ export class EnvCommand extends AbstractDynamoCommand implements CreateDynamoCom
     this.commands.push(command);
     return [command];
   }
-  
 }
