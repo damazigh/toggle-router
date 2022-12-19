@@ -5,11 +5,10 @@ import { NotificationService } from './notification.service';
 import { EnvService } from './env.service';
 import { MetadataController } from './metadata.controller';
 import { EnvEntityController } from './env-entity.controller';
-import { NotificationController } from './notification.controller';
 
 @Module({
   imports: [],
-  controllers: [EnvController, MetadataController, EnvEntityController, NotificationController],
+  controllers: [EnvController, MetadataController, EnvEntityController],
   providers: [AppService, EnvService, NotificationService],
 })
 export class AppModule {}
