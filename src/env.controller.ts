@@ -35,6 +35,11 @@ export class EnvController {
     return await this.envService.getEnvV2(name, appliesTo)
   }
 
+  @Get('/filtered-by/applies-to/:appliesTo')
+  public async getAllEnvByAppliesTo(@Param('appliesTo') appliesTo: SupportedAppliesTo) {
+    return await this.envService.allByAppliesTo(appliesTo);
+  }
+
   @Get(':key/history')
   public async envHistory(@Param() filterEnv: FilterEnv) {
     const res = await this.envService.getEnvHistory(filterEnv);

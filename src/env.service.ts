@@ -2,7 +2,7 @@ import { ConflictException, Injectable } from '@nestjs/common';
 import { stringify } from 'querystring';
 import { CommonService } from './common.service';
 import { EnvCommand } from './db/command/impl/env.command';
-import { SupportedAppliesTo, TABLE_NAME } from './enum/constant';
+import { GlobalSecondaryIndexes, SupportedAppliesTo, TABLE_NAME } from './enum/constant';
 import { EnvEntityService } from './env-entity.service';
 import { CreateEnvEntity } from './inout/in/create-env-entity.model';
 import { CreateEnv } from './inout/in/create_env';
@@ -94,6 +94,22 @@ export class EnvService {
     }
 
     return items[0]
+  }
+
+  public async allByAppliesTo(appliesTo: SupportedAppliesTo) {
+    let items = [];
+    for(let applyTo of [appliesTo, SupportedAppliesTo.ALL]) {
+      const params = {
+        TableName: TABLE_NAME,
+        IndexName: GlobalSecondaryIndexes.APPLIES_TO_INDEX,
+        KeyConditionExpression: "appliesTo = :PK",
+        ExpressionAttributeValues: {
+          ':PK': applyTo,
+        }
+      };
+      items = [...items, ...(await this.commonService.search(params)).Items]
+    }
+    return items;
   }
 
   private envAndToggles(items: any): [any[], {}] {
