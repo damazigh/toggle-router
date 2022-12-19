@@ -4,17 +4,21 @@ import { SupportedAppliesTo } from './enum/constant';
 import { EnvEntityService } from './env-entity.service';
 import { CreateEnvEntity } from './inout/in/create-env-entity.model';
 import { GetEnvEntities } from './inout/in/get_env_entities';
+import { NotificationService } from './notification.service';
 
 @Controller('env-entity')
 export class EnvEntityController {
   constructor(
     private envEntityService: EnvEntityService,
-    private commonService: CommonService
+    private commonService: CommonService,
+    private notificationService: NotificationService
     ) {}
 
   @Post()
   public async create(@Body() body: CreateEnvEntity[]) {
-    return await this.envEntityService.create(body)
+    const res = await this.envEntityService.create(body)
+    await this.notificationService.create(this.notificationService.build('event', 'INVALIDATE_CACHE'));
+    return res;
   }
 
   @Get(':toggleKey')
