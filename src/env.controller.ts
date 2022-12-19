@@ -5,16 +5,22 @@ import { FilterEnv } from './inout/in/filter_env';
 import { SupportedAppliesTo } from './enum/constant';
 import { UpdateCommand } from '@aws-sdk/lib-dynamodb';
 import { UpdateEnv } from './inout/in/update_env';
+import { NotificationService } from './notification.service';
+import { CreateNotification } from './db/model/create_notification';
 
 
 @Controller('env')
 export class EnvController {
 
-  constructor(private envService: EnvService) {}
+  constructor(
+    private envService: EnvService,
+    private notificationService: NotificationService
+  ) {}
 
   @Post()
   public async createEnv(@Body() body: CreateEnv) {
     const res = await this.envService.create(body);
+    await this.notificationService.create(this.notificationService.build('event', 'INVALIDATE_CACHE'));
     return res;
   }
 
@@ -53,6 +59,7 @@ export class EnvController {
     updateEnv.params = body;
 
     const res = await this.envService.update(updateEnv);
+    await this.notificationService.create(this.notificationService.build('event', 'INVALIDATE_CACHE'));
     return res;
   }
 }

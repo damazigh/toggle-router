@@ -6,7 +6,15 @@ import { SNSClient, PublishCommand, PublishCommandInput, ListTopicsCommand } fro
 export class NotificationService {
   
   public async create(createNotification: CreateNotification): Promise<any> {
-    const client = new SNSClient({ region: "us-east-1", endpoint: "http://localhost:4566" });
+    const client = new SNSClient({
+      region: "us-east-1",
+      endpoint: "http://localstack:4566",
+      credentials: {
+        accessKeyId: 'test',
+        secretAccessKey: 'test'
+      }
+    });
+
     const input = {
       Message: JSON.stringify({
         key: createNotification.key,
@@ -17,5 +25,12 @@ export class NotificationService {
     const command = new PublishCommand(input);
     // const command = new ListTopicsCommand({NextToken: null});
     return await client.send(command);
+  }
+
+  public build(key, value) {
+    const n = new CreateNotification();
+    n.key = key;
+    n.value = value;
+    return n;
   }
 }
