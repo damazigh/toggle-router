@@ -8,7 +8,7 @@ export class MetadataController {
     return [
       {
         name: 'Region',
-        type: 'basic',
+        type: 'BASIC',
         options: Object.keys(SupportedAppliesToForBasic).map((v) => ({
           name: SupportedAppliesToForBasic[v],
           key: v,
@@ -16,7 +16,7 @@ export class MetadataController {
       },
       {
         name: 'Granular',
-        type: 'toggle',
+        type: 'TOGGLE',
         options: Object.keys(SupportedEntities).map((v) => ({
           name: SupportedEntities[v],
           key: v,
