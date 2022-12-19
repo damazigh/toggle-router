@@ -94,7 +94,7 @@ export class EnvService {
     }
 
     const res = items[0];
-    if (res.envType === SupportedEnvType.TOGGLE) {
+    if (res && res.envType === SupportedEnvType.TOGGLE) {
       // then fetch toggle
       const params = {
         TableName: TABLE_NAME,
