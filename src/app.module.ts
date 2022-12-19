@@ -1,5 +1,6 @@
 import { Module } from '@nestjs/common';
 import { EnvController } from './env.controller';
+import { NotificationService } from './notification.service';
 import { EnvService } from './env.service';
 import { MetadataController } from './metadata.controller';
 import { EnvEntityController } from './env-entity.controller';
@@ -11,6 +12,6 @@ import { CommonService } from './common.service';
 @Module({
   imports: [],
   controllers: [EnvController, MetadataController, EnvEntityController, HistoryController],
-  providers: [EnvService, EnvEntityService, HistoryService, CommonService],
+  providers: [EnvService, EnvEntityService, HistoryService, CommonService, NotificationService],
 })
 export class AppModule {}
