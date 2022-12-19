@@ -88,7 +88,7 @@ export class EnvService {
         }
       };
       items = (await this.commonService.search(params)).Items;
-      if (items) {
+      if (items && items.length > 0) {
         break;
       }
     }
